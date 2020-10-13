@@ -12,10 +12,7 @@ import requests
 import threading
 import socket
 import math
-import protocol
-import it100
 import node_funcs
-from nodes import zone
 
 LOGGER = polyinterface.LOGGER
 
