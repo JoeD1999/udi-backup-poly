@@ -1,0 +1,22 @@
+{
+    "name": "Backup",
+    "docs": "https://github.com/bpaauwe/udi-backup-poly/README.md",
+    "type": "python3",
+    "executable": "backup.py",
+    "install": "install.sh",
+    "description": "Save and restore nodes",
+    "notice": "",
+    "shortPoll": "5",
+    "longPoll": "60",
+    "profile_version": "1.0.0",
+    "credits": [
+    	{
+    		"title": "Backup -A node server to save/restore node status",
+    		"author": "Bob Paauwe",
+    		"version": "1.0.0",
+    		"date": "October 13, 2020",
+    		"source": "https://github.com/bpaauwe/udi-backup-poly",
+		"license": "https://github.com/bpaauwe/udi-backup-poly/LICENSE"
+		}
+	]
+}
