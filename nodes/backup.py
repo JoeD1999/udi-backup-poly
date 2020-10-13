@@ -67,6 +67,7 @@ class Controller(polyinterface.Controller):
             self.configured = True
             # TODO: Run discovery/startup here?
             if self.discovery_ok:
+                LOGGER.info('Calling discover() from process config')
                 self.discover()
         elif valid:
             LOGGER.debug('-- configuration not changed, but is valid')
@@ -82,6 +83,7 @@ class Controller(polyinterface.Controller):
 
         # Read current device status
         if self.configured:
+            LOGGER.info('Calling discover() from start')
             self.discover()
             LOGGER.info('Node server started')
         else:
@@ -105,7 +107,7 @@ class Controller(polyinterface.Controller):
 
         c = requests.get(isy, auth=(self.params.get('Username'), self.params.get('Password')))
 
-        LOGGER.debug(c)
+        LOGGER.info(c)
 
 
     # Delete the node server from Polyglot
@@ -141,6 +143,7 @@ class Controller(polyinterface.Controller):
                 level = self.get_saved_log_level()
             except:
                 LOGGER.error('set_logging_level: get saved level failed.')
+            level = 10
 
             if level is None:
                 level = 10
