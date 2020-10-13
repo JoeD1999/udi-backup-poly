@@ -11,7 +11,9 @@ import datetime
 import requests
 import threading
 import socket
+import json
 import math
+import xmltodict
 import node_funcs
 
 LOGGER = polyinterface.LOGGER
@@ -30,6 +32,7 @@ class Controller(polyinterface.Controller):
         self.dsc = None
         self.mesg_thread = None
         self.discovery_ok = False
+        self.current_state = []
 
         self.params = node_funcs.NSParameters([{
             'name': 'IP Address',
@@ -101,14 +104,55 @@ class Controller(polyinterface.Controller):
 
     # Use discover to query for all device status.
     def discover(self, *args, **kwargs):
-        LOGGER.debug('in discover()')
+        LOGGER.info('in discover()')
 
         isy = 'http://' + self.params.get('IP Address') + '/rest/status'
 
         c = requests.get(isy, auth=(self.params.get('Username'), self.params.get('Password')))
 
-        LOGGER.info(c)
+        jdata = xmltodict.parse(c.text)
 
+        c.close()
+
+        #LOGGER.error(jdata['nodes'])
+        for node in jdata['nodes']['node']:
+            # node['@id'] is the node address
+            try:
+                properties = node['property']
+                try:
+                    # Is properties an array?
+                    for p in properties:
+                        if p['@id'] == 'ST' and p['@value'] is not "":
+                            # Look at UOM.  valid are 100 & 51?
+                            if p['@uom'] == '100' or p['@uom'] == '51':
+                                entry = {
+                                        'address': node['@id'],
+                                        'value': p['@value']
+                                        }
+                                self.current_state.append(entry)
+                except:
+                    # not an array
+                    if properties['@id'] == 'ST' and properties['@value'] is not "":
+                            if properties['@uom'] == '100' or properties['@uom'] == '51':
+                                entry = {
+                                        'address': node['@id'],
+                                        'value': p['@value']
+                                        }
+                                self.current_state.append(entry)
+            except:
+                LOGGER.debug('skipping ' + str(node))
+
+
+        # Save the current state
+        LOGGER.error(self.current_state)
+        cdata = {
+                'state': self.current_state,
+                'level': 10,
+                }
+        self.poly.addCustomData(cdata)
+
+    def restore(self, command):
+        LOGGER.debug('getting custom data to restore')
 
     # Delete the node server from Polyglot
     def delete(self):
@@ -161,6 +205,8 @@ class Controller(polyinterface.Controller):
             'UPDATE_PROFILE': update_profile,
             'REMOVE_NOTICES_ALL': remove_notices_all,
             'DEBUG': set_logging_level,
+            'DISCOVER': discover,
+            'RESTORE': restore,
             }
 
     # For this node server, all of the info is available in the single
