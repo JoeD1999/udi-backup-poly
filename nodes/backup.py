@@ -55,7 +55,7 @@ class Controller(polyinterface.Controller):
 
     # Process changes to customParameters
     def process_config(self, config):
-        LOGGER.error('process_config = {}'.format(config))
+        #LOGGER.error('process_config = {}'.format(config))
         (valid, changed) = self.params.update_from_polyglot(config)
         if changed and not valid:
             LOGGER.debug('-- configuration not yet valid')
