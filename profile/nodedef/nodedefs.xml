@@ -12,6 +12,7 @@
 			</sends>
 			<accepts>
 				<cmd id="DISCOVER" />
+				<cmd id="RESTORE" />
         		<cmd id="REMOVE_NOTICES_ALL" />
         		<cmd id="UPDATE_PROFILE" />
         		<cmd id="DEBUG">
