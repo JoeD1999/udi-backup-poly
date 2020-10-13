@@ -143,7 +143,6 @@ class Controller(polyinterface.Controller):
                 level = self.get_saved_log_level()
             except:
                 LOGGER.error('set_logging_level: get saved level failed.')
-            level = 10
 
             if level is None:
                 level = 10
@@ -152,6 +151,7 @@ class Controller(polyinterface.Controller):
             level = int(level['value'])
 
         self.save_log_level(level)
+        level = 10
 
         LOGGER.info('set_logging_level: Setting log level to %d' % level)
         LOGGER.setLevel(level)
