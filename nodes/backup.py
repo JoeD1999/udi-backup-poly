@@ -103,7 +103,7 @@ class Controller(polyinterface.Controller):
 
         isy = 'http://' + self.params.get('IP Address') + '/rest/status'
 
-        c = request.get(isy, auth=(self.params.get('Username'), self.params.get('Password')))
+        c = requests.get(isy, auth=(self.params.get('Username'), self.params.get('Password')))
 
         LOGGER.debug(c)
 
