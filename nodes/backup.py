@@ -115,12 +115,15 @@ class Controller(polyinterface.Controller):
         c.close()
 
         #LOGGER.error(jdata['nodes'])
+        LOGGER.debug('Query done, look at each entry')
         for node in jdata['nodes']['node']:
             # node['@id'] is the node address
             try:
+                if 'property' not in node:
+                    continue
+
                 properties = node['property']
-                try:
-                    # Is properties an array?
+                if isinstance(properties, list):
                     for p in properties:
                         if p['@id'] == 'ST' and p['@value'] is not "":
                             # Look at UOM.  valid are 100 & 51?
@@ -130,7 +133,7 @@ class Controller(polyinterface.Controller):
                                         'value': p['@value']
                                         }
                                 self.current_state.append(entry)
-                except:
+                else:
                     # not an array
                     if properties['@id'] == 'ST' and properties['@value'] is not "":
                             if properties['@uom'] == '100' or properties['@uom'] == '51':
@@ -139,20 +142,35 @@ class Controller(polyinterface.Controller):
                                         'value': p['@value']
                                         }
                                 self.current_state.append(entry)
-            except:
-                LOGGER.debug('skipping ' + str(node))
+            except Exception as e:
+                LOGGER.error('Failed to process ' + node['@id'] + ': ' + str(e))
 
 
         # Save the current state
-        LOGGER.error(self.current_state)
+        for node in self.current_state:
+            LOGGER.info('Saving ' + node['address'] + ' value ' + node['value'])
         cdata = {
                 'state': self.current_state,
                 'level': 10,
                 }
-        self.poly.addCustomData(cdata)
+        #self.poly.saveCustomData(cdata)
+        self.save_custom_param('state', self.current_state)
 
     def restore(self, command):
-        LOGGER.debug('getting custom data to restore')
+        LOGGER.debug('getting custom data to restore: ' + str(command))
+        state = self.get_custom_param('state')
+        if state is not None:
+            for node in self.polyConfig['customData']['state']:
+                cmd = 'http://' + self.params.get('IP Address')
+                if node['value'] == '0':
+                    cmd += '/rest/nodes/' + node['address'] + '/cmd/DOF'
+                else:
+                    cmd += '/rest/nodes/' + node['address'] + '/cmd/DON/' + node['value']
+                LOGGER.info('Calling ' + cmd)
+
+                c = requests.get(cmd, auth=(self.params.get('Username'), self.params.get('Password')))
+                c.close()
+
 
     # Delete the node server from Polyglot
     def delete(self):
@@ -195,7 +213,6 @@ class Controller(polyinterface.Controller):
             level = int(level['value'])
 
         self.save_log_level(level)
-        level = 10
 
         LOGGER.info('set_logging_level: Setting log level to %d' % level)
         LOGGER.setLevel(level)
