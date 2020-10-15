@@ -66,7 +66,24 @@ def set_logging_level(self, level=None):
     LOGGER.info('set_logging_level: Setting log level to %d' % level)
     LOGGER.setLevel(level)
 
-functions = (update_driver, get_saved_log_level, save_log_level, set_logging_level)
+def save_custom_param(self, key, data):
+    # get any custom data that already exists
+    if 'customData' in self.polyConfig:
+        currentData = self.polyConfig['customData']
+    else:
+        currentData = {}
+
+    currentData[key] = data
+
+    self.poly.saveCustomData(currentData)
+
+def get_custom_param(self, key):
+    if 'customData' in self.polyConfig:
+        if key in self.polyConfig['customData']:
+            return self.polyConfig['customData'][key]
+    return None
+
+functions = (update_driver, get_saved_log_level, save_log_level, set_logging_level, save_custom_param, get_custom_param)
 
 """
     Functions to handle custom parameters.
