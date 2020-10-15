@@ -1,7 +1,8 @@
 # controller
-ND-BACKUP-NAME = Save / Restore
-ND-BACKUP-ICON = GenericCtl
-CMD-ctl-DISCOVER-NAME = Re-Discover
+ND-backup-NAME = Save / Restore
+ND-backup-ICON = GenericCtl
+CMD-ctl-DISCOVER-NAME = Backup
+CMD-ctl-RESTORE-NAME = Restore
 CMD-ctl-UPDATE_PROFILE-NAME = Update Profile
 CMD-ctl-REMOVE_NOTICES_ALL-NAME = Remove Notices
 CMD-ctl-DEBUG-NAME = Log Level
