@@ -4,7 +4,7 @@
     "type": "python3",
     "executable": "backup.py",
     "install": "install.sh",
-    "description": "Save and restore nodes",
+    "description": "Save and restore lighting type device status",
     "notice": "",
     "shortPoll": "5",
     "longPoll": "60",
