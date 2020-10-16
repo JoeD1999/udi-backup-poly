@@ -55,5 +55,8 @@ The Roku nodeserver keeps track of the version number and when a profile rebuild
 
 # Release Notes
 
+- 1.0.1 10/16/2020
+   - fix bug where backup would cause duplicate entries
+   - changed to /rest/nodes endpoint to improve performance
 - 1.0.0 10/15/2020
    - Initial release to public github
