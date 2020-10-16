@@ -106,7 +106,8 @@ class Controller(polyinterface.Controller):
     def discover(self, *args, **kwargs):
         LOGGER.info('in discover()')
 
-        isy = 'http://' + self.params.get('IP Address') + '/rest/status'
+        #isy = 'http://' + self.params.get('IP Address') + '/rest/status'
+        isy = 'http://' + self.params.get('IP Address') + '/rest/nodes'
 
         c = requests.get(isy, auth=(self.params.get('Username'), self.params.get('Password')))
 
@@ -116,39 +117,41 @@ class Controller(polyinterface.Controller):
 
         #LOGGER.error(jdata['nodes'])
         LOGGER.debug('Query done, look at each entry')
+        count = 0
+        self.current_state = []
         for node in jdata['nodes']['node']:
             # node['@id'] is the node address
             try:
                 if 'property' not in node:
                     continue
 
-                properties = node['property']
-                if isinstance(properties, list):
-                    for p in properties:
-                        if p['@id'] == 'ST' and p['@value'] is not "":
-                            # Look at UOM.  valid are 100 & 51?
-                            if p['@uom'] == '100' or p['@uom'] == '51':
-                                entry = {
-                                        'address': node['@id'],
-                                        'value': p['@value']
-                                        }
-                                self.current_state.append(entry)
-                else:
-                    # not an array
-                    if properties['@id'] == 'ST' and properties['@value'] is not "":
-                            if properties['@uom'] == '100' or properties['@uom'] == '51':
-                                entry = {
-                                        'address': node['@id'],
-                                        'value': p['@value']
-                                        }
-                                self.current_state.append(entry)
+                p = node['property']
+                LOGGER.debug('address = ' + node['address'])
+                LOGGER.debug('name = ' + node['name'])
+                LOGGER.debug('type = ' + node['type'])
+                LOGGER.debug('   ' + p['@id'] + ' = ' + p['@value'] + ' -- ' + p['@uom'])
+
+                if p['@id'] == 'ST' and p['@value'] is not "":
+                    if p['@uom'] == '100' or p['@uom'] == '51':
+                        entry = {
+                            'address': node['address'],
+                            'name': node['name'],
+                            'value': p['@value']
+                        }
+                        self.current_state.append(entry)
+                        count += 1
+
             except Exception as e:
-                LOGGER.error('Failed to process ' + node['@id'] + ': ' + str(e))
+                LOGGER.error('Failed to process ' + node['name'] + ': ' + str(e))
+                LOGGER.error(str(p))
+
+        LOGGER.info('Processed ' + str(count) + ' devices.')
 
 
         # Save the current state
         for node in self.current_state:
-            LOGGER.info('Saving ' + node['address'] + ' value ' + node['value'])
+            LOGGER.info('Saving ' + node['address'] + '/' + node['name'] + ' value ' + node['value'])
+
         cdata = {
                 'state': self.current_state,
                 'level': 10,
