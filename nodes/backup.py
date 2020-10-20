@@ -126,6 +126,10 @@ class Controller(polyinterface.Controller):
                     continue
 
                 p = node['property']
+                if isinstance(p, list):
+                    LOGGER.info('Device ' + node['name'] + ' has a property list, skipping')
+                    continue
+
                 if 'family' in node:
                     family =  node['family']
                 else:
