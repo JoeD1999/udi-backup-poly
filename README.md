@@ -55,6 +55,9 @@ The Roku nodeserver keeps track of the version number and when a profile rebuild
 
 # Release Notes
 
+- 1.0.2 10/20/2020
+   - filter devices by family and category.  Only save Insteon and Z-Wave
+     switches/dimmers
 - 1.0.1 10/16/2020
    - fix bug where backup would cause duplicate entries
    - changed to /rest/nodes endpoint to improve performance
