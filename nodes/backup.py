@@ -126,20 +126,38 @@ class Controller(polyinterface.Controller):
                     continue
 
                 p = node['property']
+                if 'family' in node:
+                    family =  node['family']
+                else:
+                    family = 1
                 LOGGER.debug('address = ' + node['address'])
                 LOGGER.debug('name = ' + node['name'])
                 LOGGER.debug('type = ' + node['type'])
+                LOGGER.debug('family = ' + str(family))
                 LOGGER.debug('   ' + p['@id'] + ' = ' + p['@value'] + ' -- ' + p['@uom'])
+
 
                 if p['@id'] == 'ST' and p['@value'] is not "":
                     if p['@uom'] == '100' or p['@uom'] == '51':
-                        entry = {
-                            'address': node['address'],
-                            'name': node['name'],
-                            'value': p['@value']
-                        }
-                        self.current_state.append(entry)
-                        count += 1
+                        category = node['type'].split('.')[0]
+                        if family == 1 and (category == '1' or category == '2'):
+                            # insteon categories 1 and 2
+                            entry = {
+                                'address': node['address'],
+                                'name': node['name'],
+                                'value': p['@value']
+                            }
+                            self.current_state.append(entry)
+                            count += 1
+                        elif family == 4 and (category == '3' or category == '4'):
+                            # z-wave categories 3 and 4
+                            entry = {
+                                'address': node['address'],
+                                'name': node['name'],
+                                'value': p['@value']
+                            }
+                            self.current_state.append(entry)
+                            count += 1
 
             except Exception as e:
                 LOGGER.error('Failed to process ' + node['name'] + ': ' + str(e))
