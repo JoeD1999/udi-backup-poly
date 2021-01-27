@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Polyglot v2 node server to save/restore node status.
-Copyright (C) 2020 Robert Paauwe
+Polyglot v3 node server to save/restore node status.
+Copyright (C) 2020,2021 Robert Paauwe
 """
 
-import polyinterface
+import udi_interface
 import sys
 import time
 import datetime
@@ -14,26 +14,29 @@ import socket
 import json
 import math
 import xmltodict
-import node_funcs
+#import node_funcs
 
-LOGGER = polyinterface.LOGGER
+LOGGER = udi_interface.LOGGER
 
-@node_funcs.add_functions_as_methods(node_funcs.functions)
-class Controller(polyinterface.Controller):
+class Controller(udi_interface.Node):
     id = 'backup'
     hint = [0,0,0,0]
 
-    def __init__(self, polyglot):
-        super(Controller, self).__init__(polyglot)
-        self.name = 'BACKUP'
-        self.address = 'backup'
-        self.primary = self.address
+    def __init__(self, polyglot, primary, address, name):
+        super(Controller, self).__init__(polyglot, primary, address, name)
+        self.poly = polyglot
+        self.name = 'Save/Restore lighting'
+        self.address = address
+        self.primary = primary
         self.configured = False
-        self.dsc = None
         self.mesg_thread = None
         self.discovery_ok = False
         self.current_state = []
+        self.Parameters = Custom(polyglot, 'customparams')
+        self.Notices = Custom(polyglot, 'notices')
+        self.CustomData = Custom(polyglot, 'customdata')
 
+        """
         self.params = node_funcs.NSParameters([{
             'name': 'IP Address',
             'default': 'set me',
@@ -53,38 +56,50 @@ class Controller(polyinterface.Controller):
             'notice': 'ISY Password must be set',
             },
             ])
+        """
 
-        self.poly.onConfig(self.process_config)
+        self.poly.onCustomParams(self.parameterHandler)
+        self.poly.onStart(address, self.start)
 
-    # Process changes to customParameters
-    def process_config(self, config):
-        #LOGGER.error('process_config = {}'.format(config))
-        (valid, changed) = self.params.update_from_polyglot(config)
-        if changed and not valid:
-            LOGGER.debug('-- configuration not yet valid')
-            self.removeNoticesAll()
-            self.params.send_notices(self)
-        elif changed and valid:
-            LOGGER.debug('-- configuration is valid')
-            self.removeNoticesAll()
-            self.configured = True
-            # TODO: Run discovery/startup here?
-            if self.discovery_ok:
-                LOGGER.info('Calling discover() from process config')
+        self.poly.addNode(self)
+
+    def parameterHandler(self, params):
+        self.Parameters.load(params)
+
+        # TODO: Check parameters and possibly run discover
+        configured = True
+        try:
+            self.Notices.clear()
+            if self.Parameters['IP Address'] is None:
+                self.Notices.ip = 'Please set the IP address of the ISY'
+                configured = False
+            if self.Parameters['Username'] is None:
+                self.Notices.ip = 'Please set the ISY username'
+                configured = False
+            if self.Parameters['Password'] is None:
+                self.Notices.ip = 'Please set the ISY password'
+                configured = False
+        except Exception as e:
+            LOGGER.error('Parameter Failure: {}'.format(e))
+
+        if not configured:
+            self.configured = False
+            return
+
+        try:
+            if self.Parameters.isChanged('IP Address') or
+            self.Parameters.isChanged('Username') or
+            self.Parameters.isChanged('Password'):
                 self.discover()
-        elif valid:
-            LOGGER.debug('-- configuration not changed, but is valid')
-            # is this necessary
-            #self.configured = True
+        except Exception as e:
+            LOGGER.error('Parameter Failure: {}'.format(e))
 
     def start(self):
         LOGGER.info('Starting node server')
-        self.set_logging_level()
         self.check_params()
+        self.poly.updateProfile()
+        self.poly.setCustomParamsDoc()
 
-        self.discovery_ok = True
-
-        # Read current device status
         if self.configured:
             LOGGER.info('Calling discover() from start')
             self.discover()
@@ -92,12 +107,8 @@ class Controller(polyinterface.Controller):
         else:
             LOGGER.info('Waiting for configuration to be complete')
 
-    def longPoll(self):
-        pass
-
-    def shortPoll(self):
-        pass
-
+    # TODO: What should query really do?  Maybe query should get the
+    # device status and save it instead of discover?
     def query(self):
         for node in self.nodes:
             self.nodes[node].reportDrivers()
@@ -106,10 +117,9 @@ class Controller(polyinterface.Controller):
     def discover(self, *args, **kwargs):
         LOGGER.info('in discover()')
 
-        #isy = 'http://' + self.params.get('IP Address') + '/rest/status'
-        isy = 'http://' + self.params.get('IP Address') + '/rest/nodes'
+        isy = 'http://' + self.Parameters['IP Address'] + '/rest/nodes'
 
-        c = requests.get(isy, auth=(self.params.get('Username'), self.params.get('Password')))
+        c = requests.get(isy, auth=(self.Parameters['Username'], self.Parameters['Password']))
 
         jdata = xmltodict.parse(c.text)
 
@@ -118,7 +128,7 @@ class Controller(polyinterface.Controller):
         #LOGGER.error(jdata['nodes'])
         LOGGER.debug('Query done, look at each entry')
         count = 0
-        self.current_state = []
+        current_state = []
         for node in jdata['nodes']['node']:
             # node['@id'] is the node address
             try:
@@ -147,20 +157,27 @@ class Controller(polyinterface.Controller):
                         if family == 1 and (category == '1' or category == '2'):
                             # insteon categories 1 and 2
                             entry = {
-                                'address': node['address'],
-                                'name': node['name'],
-                                'value': p['@value']
-                            }
-                            self.current_state.append(entry)
+                                        'name': node['name'], 
+                                        'value':  p['@value']
+                                    }
+                            self.CustomData[node['address']] = entry
+                            #current_state.append(entry)
                             count += 1
                         elif family == 4 and (category == '3' or category == '4'):
                             # z-wave categories 3 and 4
+                            '''
                             entry = {
                                 'address': node['address'],
                                 'name': node['name'],
                                 'value': p['@value']
                             }
-                            self.current_state.append(entry)
+                            current_state.append(entry)
+                            '''
+                            entry = {
+                                        'name': node['name'], 
+                                        'value':  p['@value']
+                                    }
+                            self.CustomData[node['address']] = entry
                             count += 1
 
             except Exception as e:
@@ -170,19 +187,37 @@ class Controller(polyinterface.Controller):
         LOGGER.info('Processed ' + str(count) + ' devices.')
 
 
+    def save(self, current_stat):
+        # TODO: use a Custom class custom data here and maybe move this 
+        #       to a separate method?
         # Save the current state
-        for node in self.current_state:
+        for node in current_state:
             LOGGER.info('Saving ' + node['address'] + '/' + node['name'] + ' value ' + node['value'])
 
+        self.CustomData.load(current_state)
+        """
         cdata = {
                 'state': self.current_state,
                 'level': 10,
                 }
         #self.poly.saveCustomData(cdata)
         self.save_custom_param('state', self.current_state)
+        """
 
     def restore(self, command):
         LOGGER.debug('getting custom data to restore: ' + str(command))
+        for address in self.CustomData.keys():
+            cmd = 'http://' + self.Parameters['IP Address']
+            if self.CustomData[address]['value'] == '0':
+                cmd += '/rest/nodes/' + address + '/cmd/DOF'
+            else:
+                cmd += '/rest/nodes/' + address + '/cmd/DON/' + self.CustomData[address]['value']
+            LOGGER.info('Calling ' + cmd)
+
+            c = requests.get(cmd, auth=(self.Parameters['Username'], self.Parameters['Password']))
+            c.close()
+
+        """
         state = self.get_custom_param('state')
         if state is not None:
             for node in self.polyConfig['customData']['state']:
@@ -195,6 +230,7 @@ class Controller(polyinterface.Controller):
 
                 c = requests.get(cmd, auth=(self.params.get('Username'), self.params.get('Password')))
                 c.close()
+        """
 
 
     # Delete the node server from Polyglot
@@ -204,13 +240,9 @@ class Controller(polyinterface.Controller):
     def stop(self):
         LOGGER.info('Stopping node server')
 
-    def update_profile(self, command):
-        st = self.poly.installprofile()
-        return st
-
     def check_params(self):
         # NEW code, try this:
-        self.removeNoticesAll()
+        self.Notices.clear()
 
         if self.params.get_from_polyglot(self):
             LOGGER.debug('All required parameters are set!')
@@ -221,33 +253,9 @@ class Controller(polyinterface.Controller):
             LOGGER.debug('Username = ' + self.params.get('Username'))
             self.params.send_notices(self)
 
-    def remove_notices_all(self, command):
-        self.removeNoticesAll()
-
-    def set_logging_level(self, level=None):
-        if level is None:
-            try:
-                level = self.get_saved_log_level()
-            except:
-                LOGGER.error('set_logging_level: get saved level failed.')
-
-            if level is None:
-                level = 10
-            level = int(level)
-        else:
-            level = int(level['value'])
-
-        self.save_log_level(level)
-
-        LOGGER.info('set_logging_level: Setting log level to %d' % level)
-        LOGGER.setLevel(level)
-
-
     commands = {
-            'UPDATE_PROFILE': update_profile,
-            'REMOVE_NOTICES_ALL': remove_notices_all,
-            'DEBUG': set_logging_level,
             'DISCOVER': discover,
+            'QUERY': discover,
             'RESTORE': restore,
             }
 

@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
 """
-Polyglot v2 save/restore node server.
-Copyright (C) 2020 Robert Paauwe
+Polyglot v3 save/restore node server.
+Copyright (C) 2020,2021 Robert Paauwe
 """
 import sys
 import time
-import polyinterface
+import udi_interface
 from nodes import backup
 
-LOGGER = polyinterface.LOGGER
+LOGGER = udi_interface.LOGGER
 
 if __name__ == "__main__":
     try:
-        polyglot = polyinterface.Interface('BACKUP')
+        polyglot = udi_interface.Interface('BACKUP')
         polyglot.start()
-        control = backup.Controller(polyglot)
-        control.runForever()
+        control = backup.Controller(polyglot, 'controller', 'controller', 'Save/Restore')
+        polyglot.runForever()
     except (KeyboardInterrupt, SystemExit):
         sys.exit(0)
         
