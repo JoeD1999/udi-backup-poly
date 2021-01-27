@@ -17,6 +17,8 @@ import xmltodict
 #import node_funcs
 
 LOGGER = udi_interface.LOGGER
+Custom = udi_interface.Custom
+ISY = udi_interface.ISY
 
 class Controller(udi_interface.Node):
     id = 'backup'
@@ -64,6 +66,7 @@ class Controller(udi_interface.Node):
         self.poly.addNode(self)
 
     def parameterHandler(self, params):
+        LOGGER.error('Entered parameterHandler with {}'.format(params))
         self.Parameters.load(params)
 
         # TODO: Check parameters and possibly run discover
@@ -87,16 +90,14 @@ class Controller(udi_interface.Node):
             return
 
         try:
-            if self.Parameters.isChanged('IP Address') or
-            self.Parameters.isChanged('Username') or
-            self.Parameters.isChanged('Password'):
+            if self.Parameters.isChanged('IP Address') or self.Parameters.isChanged('Username') or self.Parameters.isChanged('Password'):
                 self.discover()
         except Exception as e:
             LOGGER.error('Parameter Failure: {}'.format(e))
 
     def start(self):
         LOGGER.info('Starting node server')
-        self.check_params()
+        #self.check_params()
         self.poly.updateProfile()
         self.poly.setCustomParamsDoc()
 
@@ -240,6 +241,7 @@ class Controller(udi_interface.Node):
     def stop(self):
         LOGGER.info('Stopping node server')
 
+    """
     def check_params(self):
         # NEW code, try this:
         self.Notices.clear()
@@ -252,6 +254,7 @@ class Controller(udi_interface.Node):
             LOGGER.debug('IP Address = ' + self.params.get('IP Address'))
             LOGGER.debug('Username = ' + self.params.get('Username'))
             self.params.send_notices(self)
+    """
 
     commands = {
             'DISCOVER': discover,

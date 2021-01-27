@@ -12,7 +12,7 @@ LOGGER = udi_interface.LOGGER
 
 if __name__ == "__main__":
     try:
-        polyglot = udi_interface.Interface('BACKUP')
+        polyglot = udi_interface.Interface([backup.Controller,])
         polyglot.start()
         control = backup.Controller(polyglot, 'controller', 'controller', 'Save/Restore')
         polyglot.runForever()
