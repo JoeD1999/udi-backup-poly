@@ -37,28 +37,7 @@ class Controller(udi_interface.Node):
         self.Parameters = Custom(polyglot, 'customparams')
         self.Notices = Custom(polyglot, 'notices')
         self.CustomData = Custom(polyglot, 'customdata')
-
-        """
-        self.params = node_funcs.NSParameters([{
-            'name': 'IP Address',
-            'default': 'set me',
-            'isRequired': True,
-            'notice': 'IP Address of ISY must be set',
-            },
-            {
-            'name': 'Username',
-            'default': 'set me',
-            'isRequired': True,
-            'notice': 'ISY Username must be set',
-            },
-            {
-            'name': 'Password',
-            'default': 'set me',
-            'isRequired': True,
-            'notice': 'ISY Password must be set',
-            },
-            ])
-        """
+        self.ISY = ISY(polyglot)
 
         self.poly.onCustomParams(self.parameterHandler)
         self.poly.onStart(address, self.start)
@@ -68,39 +47,10 @@ class Controller(udi_interface.Node):
     def parameterHandler(self, params):
         LOGGER.error('Entered parameterHandler with {}'.format(params))
         self.Parameters.load(params)
-
-        # TODO: Check parameters and possibly run discover
-        configured = True
-        try:
-            self.Notices.clear()
-            if self.Parameters['IP Address'] == '':
-                self.Notices.ip = 'Please set the IP address of the ISY'
-                configured = False
-            if self.Parameters['Username'] == '':
-                self.Notices.ip = 'Please set the ISY username'
-                configured = False
-            if self.Parameters['Password'] == '':
-                self.Notices.ip = 'Please set the ISY password'
-                configured = False
-            LOGGER.error('Checked for empty parameters complete.')
-        except Exception as e:
-            LOGGER.error('Parameter Failure: {}'.format(e))
-
-        if not configured:
-            self.configured = False
-            LOGGER.error('Not configured, waiting for configuration.')
-            return
-
-        try:
-            LOGGER.error('Looking for parameter change')
-            if self.Parameters.isChanged('IP Address') or self.Parameters.isChanged('Username') or self.Parameters.isChanged('Password'):
-                self.discover()
-        except Exception as e:
-            LOGGER.error('Parameter Failure: {}'.format(e))
+        self.check_params()
 
     def start(self):
         LOGGER.info('Starting node server')
-        #self.check_params()
         self.poly.updateProfile()
         self.poly.setCustomParamsDoc()
 
@@ -110,6 +60,10 @@ class Controller(udi_interface.Node):
             LOGGER.info('Node server started')
         else:
             LOGGER.info('Waiting for configuration to be complete')
+
+        cmd = self.ISY.cmd('/rest/nodes/status')
+        LOGGER.error('ISY response = {}'.format(cmd))
+        
 
     # TODO: What should query really do?  Maybe query should get the
     # device status and save it instead of discover?
@@ -244,20 +198,34 @@ class Controller(udi_interface.Node):
     def stop(self):
         LOGGER.info('Stopping node server')
 
-    """
     def check_params(self):
-        # NEW code, try this:
-        self.Notices.clear()
+        configured = True
+        try:
+            self.Notices.clear()
+            if self.Parameters['IP Address'] == '':
+                self.Notices.ip = 'Please set the IP address of the ISY'
+                configured = False
+            if self.Parameters['Username'] == '':
+                self.Notices.user = 'Please set the ISY username'
+                configured = False
+            if self.Parameters['Password'] == '':
+                self.Notices.password = 'Please set the ISY password'
+                configured = False
+            LOGGER.error('Checked for empty parameters complete.')
+        except Exception as e:
+            LOGGER.error('Parameter Failure: {}'.format(e))
 
-        if self.params.get_from_polyglot(self):
-            LOGGER.debug('All required parameters are set!')
-            self.configured = True
-        else:
-            LOGGER.debug('Configuration required.')
-            LOGGER.debug('IP Address = ' + self.params.get('IP Address'))
-            LOGGER.debug('Username = ' + self.params.get('Username'))
-            self.params.send_notices(self)
-    """
+        if not configured:
+            self.configured = False
+            LOGGER.error('Not configured, waiting for configuration.')
+            return
+
+        try:
+            LOGGER.error('Looking for parameter change')
+            if self.Parameters.isChanged('IP Address') or self.Parameters.isChanged('Username') or self.Parameters.isChanged('Password'):
+                self.discover()
+        except Exception as e:
+            LOGGER.error('Parameter Failure: {}'.format(e))
 
     commands = {
             'DISCOVER': discover,
