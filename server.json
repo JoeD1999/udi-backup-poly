@@ -1,6 +1,6 @@
 {
     "name": "Backup",
-    "docs": "https://github.com/bpaauwe/udi-backup-poly/README.md",
+    "docs": "https://github.com/BME-nodeservers/udi-backup-poly/README.md",
     "type": "python3",
     "executable": "backup.py",
     "install": "install.sh",
@@ -9,14 +9,19 @@
     "shortPoll": "5",
     "longPoll": "60",
     "profile_version": "1.0.0",
+	"customParams": {
+		"IP Address": "",
+		"Username": "",
+		"Password": ""
+	},
     "credits": [
     	{
     		"title": "Backup -A node server to save/restore node status",
     		"author": "Bob Paauwe",
-    		"version": "1.0.2",
-    		"date": "October 20, 2020",
-    		"source": "https://github.com/bpaauwe/udi-backup-poly",
-		"license": "https://github.com/bpaauwe/udi-backup-poly/LICENSE"
+    		"version": "2.0.0",
+    		"date": "January 27, 2021",
+    		"source": "https://github.com/BME-nodeservers/udi-backup-poly",
+		    "license": "https://github.com/BME-nodeservers/udi-backup-poly/LICENSE"
 		}
 	]
 }
