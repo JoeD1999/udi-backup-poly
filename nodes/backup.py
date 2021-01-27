@@ -73,23 +73,26 @@ class Controller(udi_interface.Node):
         configured = True
         try:
             self.Notices.clear()
-            if self.Parameters['IP Address'] is None:
+            if self.Parameters['IP Address'] == '':
                 self.Notices.ip = 'Please set the IP address of the ISY'
                 configured = False
-            if self.Parameters['Username'] is None:
+            if self.Parameters['Username'] == '':
                 self.Notices.ip = 'Please set the ISY username'
                 configured = False
-            if self.Parameters['Password'] is None:
+            if self.Parameters['Password'] == '':
                 self.Notices.ip = 'Please set the ISY password'
                 configured = False
+            LOGGER.error('Checked for empty parameters complete.')
         except Exception as e:
             LOGGER.error('Parameter Failure: {}'.format(e))
 
         if not configured:
             self.configured = False
+            LOGGER.error('Not configured, waiting for configuration.')
             return
 
         try:
+            LOGGER.error('Looking for parameter change')
             if self.Parameters.isChanged('IP Address') or self.Parameters.isChanged('Username') or self.Parameters.isChanged('Password'):
                 self.discover()
         except Exception as e:
