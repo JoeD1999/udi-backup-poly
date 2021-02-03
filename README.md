@@ -26,13 +26,6 @@ The settings for this node are:
 #### Long Poll
    * Not used
 
-#### IP Address
-   * The IP Address of the ISY to snapshot and restore
-#### Username
-   * The ISY username
-#### Password
-   * The ISY password
-
 ## Requirements
 Polisy running Polyglot version 3.x
 

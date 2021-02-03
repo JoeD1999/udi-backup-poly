@@ -14,7 +14,7 @@ if __name__ == "__main__":
     try:
         polyglot = udi_interface.Interface([backup.Controller,])
         polyglot.start()
-        control = backup.Controller(polyglot, 'controller', 'controller', 'Save/Restore')
+        control = backup.Controller(polyglot, 'controller', 'controller', 'Save_Restore')
         polyglot.runForever()
     except (KeyboardInterrupt, SystemExit):
         sys.exit(0)
