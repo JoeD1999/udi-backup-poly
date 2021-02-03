@@ -9,11 +9,6 @@
     "shortPoll": "5",
     "longPoll": "60",
     "profile_version": "1.0.0",
-	"customParams": {
-		"IP Address": "",
-		"Username": "",
-		"Password": ""
-	},
     "credits": [
     	{
     		"title": "Backup -A node server to save/restore node status",
