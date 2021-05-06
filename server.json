@@ -18,5 +18,21 @@
     		"source": "https://github.com/BME-nodeservers/udi-backup-poly",
 		    "license": "https://github.com/BME-nodeservers/udi-backup-poly/LICENSE"
 		}
-	]
+	],
+	"store": {
+		"developer": "bpaauwe@bobsplace.com",
+		"purchaseOptions": [
+			{
+				"price": 1.00,
+				"recurring": 1,
+				"recurringPeriod": "month"
+			},
+			{
+				"price": 0,
+				"isTrial": true,
+				"recurring": 30,
+				"recurringPeriod": "day"
+			}
+		]
+	}
 }
