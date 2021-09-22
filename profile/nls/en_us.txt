@@ -4,4 +4,4 @@ ND-backup-ICON = GenericCtl
 CMD-ctl-SAVE-NAME = Backup
 CMD-ctl-RESTORE-NAME = Restore
 ST-ctl-ST-NAME = NodeServer Online
-
+ST-ctl-GV0-NAME = Spaghetti
