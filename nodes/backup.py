@@ -49,7 +49,7 @@ class Controller(udi_interface.Node):
         self.ISY = ISY(polyglot)
 
         self.poly.subscribe(self.poly.START, self.start, address)
-        self.poly.subscribe(self.poly.LOGLEVEL, self.handleLevelChange)
+        #self.poly.subscribe(self.poly.LOGLEVEL, self.handleLevelChange)
 
 
         self.poly.ready()
