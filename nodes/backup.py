@@ -35,7 +35,7 @@ class Controller(udi_interface.Node):
     def __init__(self, polyglot, primary, address, name):
         super(Controller, self).__init__(polyglot, primary, address, name)
         self.poly = polyglot
-        self.name = 'Save_Restore lighting'
+        self.name = 'Indoor Air Quality'
         self.address = address
         self.primary = primary
         self.configured = False
@@ -77,12 +77,7 @@ class Controller(udi_interface.Node):
         isy = self.ISY.pyisy()
         if isy is not None:
 
-            # interact with node using address
-            NODE = '38 B6 3F 1'
-            node = isy.nodes[NODE]
-            node.turn_off()
-            sleep(5)
-            node.turn_on()
+
 
             cnt = 0
             LOGGER.debug ('in query()')
@@ -156,4 +151,11 @@ class Controller(udi_interface.Node):
 
         if 'shortPoll' in polltype:
 
-            self.setDriver('GV0', '1000', True, True)
+            self.setDriver('GV0', 1000, True, True)
+                                    
+            # interact with node using address
+            NODE = '38 B6 3F 1'
+            node = isy.nodes[NODE]
+            node.turn_on()
+        else
+            node.turn_off()
