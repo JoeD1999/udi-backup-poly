@@ -80,9 +80,9 @@ class Controller(udi_interface.Node):
             # interact with node using address
             NODE = '38 B6 3F 1'
             node = isy.nodes[NODE]
-            await node.turn_off()
+            node.turn_off()
             sleep(5)
-            await node.turn_on()
+            node.turn_on()
 
             cnt = 0
             LOGGER.debug ('in query()')
