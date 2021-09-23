@@ -35,6 +35,8 @@ Then restart the Backup nodeserver by selecting it in the Polyglot dashboard and
 
 # Release Notes
 
+- 2.0.1 09/23/2021
+   - Use latest version of udi_interface, comment out broken log level handler.
 - 2.0.0 01/27/2021
    - Updates to work on Polyglot version 3
 - 1.0.2 10/20/2020
