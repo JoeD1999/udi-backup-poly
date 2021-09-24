@@ -151,7 +151,7 @@ class Controller(udi_interface.Node):
         if 'shortPoll' in polltype:
 
             # be fancy and display a notice on the polyglot dashboard
-            self.poly.Notices[self.name] = '{}: Short poll working'
+            self.poly.Notices[self.name] = 'Short poll working...' isy.node['1A 46 CB 1'].status 
             LOGGER.info('   Short poll working')
             
             self.setDriver('GV0', 1000, True, True)
@@ -160,6 +160,8 @@ class Controller(udi_interface.Node):
             NODE = '38 B6 3F 1'
             node = isy.nodes[NODE]
             node.turn_on()
+
+            
         else:
             isy.nodes['38 B6 3F 1'].turn_off()
       
