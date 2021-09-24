@@ -1,30 +1,30 @@
 {
-    "name": "Backup",
+    "name": "Indoor Air Quality",
     "docs": "https://github.com/BME-nodeservers/udi-backup-poly/README.md",
     "type": "python3",
-    "executable": "backup.py",
+    "executable": "IAQ.py",
     "install": "install.sh",
-    "description": "Save and restore lighting type device status",
+    "description": "Manage Indoor Air Quality",
     "notice": "",
     "shortPoll": "5",
     "longPoll": "60",
     "profile_version": "1.0.0",
     "credits": [
     	{
-    		"title": "Backup -A node server to save/restore node status",
-    		"author": "Bob Paauwe",
-    		"version": "2.0.1",
-    		"date": "September 23, 2021",
+    		"title": "A node server to manage indoor air quality",
+    		"author": "Donovan Clay",
+    		"version": "0.0.1",
+    		"date": "September 24, 2021",
     		"source": "https://github.com/BME-nodeservers/udi-backup-poly",
 		    "license": "https://github.com/BME-nodeservers/udi-backup-poly/LICENSE"
 		}
 	],
 	"store": {
-		"developer": "bpaauwe@bobsplace.com",
+		"developer": "donovan@donovanclay.com",
 		"purchaseOptions": [
 			{
-				"price": 1.00,
-				"recurring": 1,
+				"price": 0.00,
+				"recurring": 0,
 				"recurringPeriod": "month"
 			},
 			{

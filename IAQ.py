@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 """
 Polyglot v3 save/restore node server.
-Copyright (C) 2020,2021 Robert Paauwe
+Copyright (C) 2021 Donovan Clay
 """
 import sys
 import time
 import udi_interface
-from nodes import backup
+from nodes import iaq
 
 LOGGER = udi_interface.LOGGER
 
 if __name__ == "__main__":
     try:
-        polyglot = udi_interface.Interface([backup.Controller,])
+        polyglot = udi_interface.Interface([iaq.Controller,])
         polyglot.start()
-        control = backup.Controller(polyglot, 'controller', 'controller', 'Save_Restore')
+        control = iaq.Controller(polyglot, 'controller', 'controller', 'IAQ')
         polyglot.runForever()
     except (KeyboardInterrupt, SystemExit):
         sys.exit(0)
