@@ -145,6 +145,8 @@ class Controller(udi_interface.Node):
 
             # be fancy and display a notice on the polyglot dashboard
             self.poly.Notices[self.name] = '{}: Short poll working'
+LOGGER.info('   Short poll working')
+            
             self.setDriver('GV0', 1000, True, True)
                                     
             # interact with node using address
