@@ -13,8 +13,8 @@
     	{
     		"title": "Backup -A node server to save/restore node status",
     		"author": "Bob Paauwe",
-    		"version": "2.0.0",
-    		"date": "January 27, 2021",
+    		"version": "2.0.1",
+    		"date": "September 23, 2021",
     		"source": "https://github.com/BME-nodeservers/udi-backup-poly",
 		    "license": "https://github.com/BME-nodeservers/udi-backup-poly/LICENSE"
 		}
