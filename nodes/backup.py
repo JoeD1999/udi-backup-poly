@@ -50,6 +50,8 @@ class Controller(udi_interface.Node):
         self.poly.ready()
         self.poly.addNode(self)
 
+        polyglot.subscribe(polyglot.POLL, self.poll)
+
     def start(self):
         LOGGER.info('Starting node server')
 
@@ -72,12 +74,6 @@ class Controller(udi_interface.Node):
         isy = self.ISY.pyisy()
         if isy is not None:
             cnt = 0
-
-            self.setDriver('GV0', 1000, True, True)          
-            # interact with node using address
-            NODE = '38 B6 3F 1'
-            node = isy.nodes[NODE]
-            node.turn_on()
 
             LOGGER.debug ('in query()')
             for name, node in isy.nodes:
