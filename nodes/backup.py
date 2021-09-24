@@ -161,8 +161,7 @@ class Controller(udi_interface.Node):
             node = isy.nodes[NODE]
             node.turn_on()
         else:
-            NODE = '38 B6 3F 1'
-            node = isy.nodes[NODE]
-            node.turn_off()
+            isy.nodes['38 B6 3F 1'].turn_off()
+      
 
 
