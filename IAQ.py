@@ -14,7 +14,7 @@ if __name__ == "__main__":
     try:
         polyglot = udi_interface.Interface([iaq.Controller,])
         polyglot.start()
-        control = iaq.Controller(polyglot, 'controller', 'controller', 'IAQ')
+        control = iaq.Controller(polyglot, 'controller', 'controller', 'iaq')
         polyglot.runForever()
     except (KeyboardInterrupt, SystemExit):
         sys.exit(0)
