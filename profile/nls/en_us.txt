@@ -1,6 +1,6 @@
 # controller
-ND-backup-NAME = Save / Restore
-ND-backup-ICON = GenericCtl
+ND-iaq-NAME = Save / Restore
+ND-iaq-ICON = GenericCtl
 CMD-ctl-SAVE-NAME = Backup
 CMD-ctl-RESTORE-NAME = Restore
 ST-ctl-ST-NAME = NodeServer Online

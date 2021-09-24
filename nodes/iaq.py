@@ -29,7 +29,7 @@ Custom = udi_interface.Custom
 ISY = udi_interface.ISY
 
 class Controller(udi_interface.Node):
-    id = 'backup'
+    id = 'iaq'
     hint = [0,0,0,0]
 
     def __init__(self, polyglot, primary, address, name):

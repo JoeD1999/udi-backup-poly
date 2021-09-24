@@ -1,6 +1,6 @@
 <nodeDefs>
     <!-- controller -->
-    <nodeDef id="backup" nodeType="139" nls="ctl">
+    <nodeDef id="iaq" nodeType="139" nls="ctl">
         <editors />
         <sts>
 			<st id="ST" editor="bool" />
