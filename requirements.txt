@@ -1,2 +1,2 @@
-polyinterface>=2.0.28
+udi_interface>=3.0.17
 xmltodict>=0.12.0
