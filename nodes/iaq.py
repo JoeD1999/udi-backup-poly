@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Polyglot v3 node server to save/restore node status.
-Copyright (C) 2020,2021 Robert Paauwe
+Polyglot v3 indoor air quality node server.
+Copyright (C) 2021 Donovan Clay
 """
 
 import udi_interface
