@@ -143,6 +143,8 @@ class Controller(udi_interface.Node):
 
         if 'shortPoll' in polltype:
 
+            # be fancy and display a notice on the polyglot dashboard
+            self.poly.Notices[self.name] = '{}: Short poll working'
             self.setDriver('GV0', 1000, True, True)
                                     
             # interact with node using address
@@ -152,4 +154,4 @@ class Controller(udi_interface.Node):
         else:
             node.turn_off()
 
-    #asdfasdf asdfasdfa
+
