@@ -7,7 +7,7 @@
     "description": "Manage Indoor Air Quality",
     "notice": "",
     "shortPoll": "5",
-    "longPoll": "60",
+    "longPoll": "6",
     "profile_version": "1.0.0",
     "credits": [
     	{
