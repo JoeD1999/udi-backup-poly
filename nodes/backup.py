@@ -154,12 +154,12 @@ class Controller(udi_interface.Node):
             self.poly.Notices[self.name] = 'Short poll working...'  
             LOGGER.info('   Short poll working')
             
-            self.setDriver('GV0', isy.node['1A 46 CB 1'].status, True, True)
+            self.setDriver('GV0', isy.node['n008_48a2e62ce05600'].status, True, True)
                                     
             # interact with node using address
             NODE = '38 B6 3F 1'
             node = isy.nodes[NODE]
-            node.turn_on()
+            node.turn_on(val=128)
 
             
         else:
