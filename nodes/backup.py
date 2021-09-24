@@ -72,6 +72,13 @@ class Controller(udi_interface.Node):
         isy = self.ISY.pyisy()
         if isy is not None:
             cnt = 0
+
+            self.setDriver('GV0', 1000, True, True)          
+            # interact with node using address
+            NODE = '38 B6 3F 1'
+            node = isy.nodes[NODE]
+            node.turn_on()
+
             LOGGER.debug ('in query()')
             for name, node in isy.nodes:
 
@@ -138,13 +145,6 @@ class Controller(udi_interface.Node):
             {'driver': 'ST', 'value': 1, 'uom': 2},   # node server status
             {'driver': 'GV0', 'value': 1, 'uom': 56}
             ]
-
-    self.setDriver('GV0', 1000, True, True)
-                            
-    # interact with node using address
-    NODE = '38 B6 3F 1'
-    node = isy.nodes[NODE]
-    node.turn_on()
 
 
     def poll(self, polltype):
