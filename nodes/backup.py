@@ -141,6 +141,8 @@ class Controller(udi_interface.Node):
 
     def poll(self, polltype):
 
+        LOGGER.info('Poll defined')
+
         if 'shortPoll' in polltype:
 
             # be fancy and display a notice on the polyglot dashboard
