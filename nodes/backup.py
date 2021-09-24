@@ -145,6 +145,7 @@ class Controller(udi_interface.Node):
 
     def poll(self, polltype):
 
+        isy = self.ISY.pyisy()
         LOGGER.info('Poll defined')
 
         if 'shortPoll' in polltype:
