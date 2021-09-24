@@ -157,9 +157,9 @@ class Controller(udi_interface.Node):
             #self.setDriver('GV0', isy.node['n008_48a2e62ce05600'].status, True, True)
                                     
             # interact with node using address
-            NODE = '38 B6 3F 1'
-            node = isy.nodes[NODE]
-            node.turn_on(val=128)
+            #NODE = '38 B6 3F 1'
+            #node = isy.nodes[NODE]
+            isy.nodes['38 B6 3F 1'].turn_on(val=128)
 
             
         else:
