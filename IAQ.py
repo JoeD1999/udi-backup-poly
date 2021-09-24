@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Polyglot v3 save/restore node server.
+Polyglot v3 indoor air quality node server.
 Copyright (C) 2021 Donovan Clay
 """
 import sys

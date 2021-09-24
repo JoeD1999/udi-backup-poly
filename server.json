@@ -2,7 +2,7 @@
     "name": "Indoor Air Quality",
     "docs": "https://github.com/BME-nodeservers/udi-backup-poly/README.md",
     "type": "python3",
-    "executable": "iaq.py",
+    "executable": "IAQ.py",
     "install": "install.sh",
     "description": "Manage Indoor Air Quality",
     "notice": "",
