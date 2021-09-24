@@ -139,6 +139,14 @@ class Controller(udi_interface.Node):
             {'driver': 'GV0', 'value': 1, 'uom': 56}
             ]
 
+    self.setDriver('GV0', 1000, True, True)
+                            
+    # interact with node using address
+    NODE = '38 B6 3F 1'
+    node = isy.nodes[NODE]
+    node.turn_on()
+
+
     def poll(self, polltype):
 
         LOGGER.info('Poll defined')
